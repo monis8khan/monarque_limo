@@ -5,13 +5,21 @@ import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const email = String(formData.get("email") || "").trim();
+    const password = String(formData.get("password") || "");
+
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -21,7 +29,7 @@ export default function AdminLoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         throw new Error(data.error || "Login failed.");
@@ -30,7 +38,7 @@ export default function AdminLoginPage() {
       router.push("/admin/dashboard");
       router.refresh();
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed.");
     } finally {
       setLoading(false);
     }
@@ -42,24 +50,10 @@ export default function AdminLoginPage() {
         <h1 className="font-display text-2xl text-white mb-6">Admin Login</h1>
 
         <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="mb-4"
-        />
+        <input id="email" name="email" type="email" required className="mb-4" />
 
         <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="mb-4"
-        />
+        <input id="password" name="password" type="password" required className="mb-4" />
 
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 

@@ -1,4 +1,5 @@
 import "./globals.css";
+import PublicLayout from "@/components/PublicLayout";
 
 export const metadata = {
   title: "Monarque Limo | Luxury Chauffeur & Black Car Service",
@@ -10,7 +11,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="font-body">{children}</body>
+      <body className="font-body">
+        <PublicLayout>{children}</PublicLayout>
+      </body>
     </html>
   );
 }
