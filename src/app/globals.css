@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #0b0b0d;
+  color: #f4f1ea;
+}
+
+.gold-text {
+  color: #c9a76a;
+}
+
+.btn-gold {
+  @apply inline-block bg-gold text-ink font-semibold px-6 py-3 tracking-wide uppercase text-sm hover:bg-goldSoft transition-colors;
+}
+
+.section-heading {
+  @apply font-display text-3xl md:text-4xl text-white mb-2;
+}
+
+.section-eyebrow {
+  @apply gold-text uppercase tracking-[0.2em] text-xs font-semibold mb-3 block;
+}
+
+.card {
+  @apply bg-panel border border-white/10 rounded-sm p-6;
+}
+
+input, textarea, select {
+  @apply bg-panel border border-white/20 text-white px-4 py-3 w-full rounded-sm focus:outline-none focus:border-gold;
+}
+
+label {
+  @apply text-sm text-white/70 mb-1 block;
+}

@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+}
+
+model Booking {
+  id                   Int      @id @default(autoincrement())
+  fullName             String
+  phone                String
+  email                String
+  pickupDatetime       DateTime
+  serviceType          String
+  vehicleId            Int?
+  vehicle              Vehicle? @relation(fields: [vehicleId], references: [id])
+  passengers           Int      @default(1)
+  luggage              Int      @default(0)
+  specialInstructions  String?  @db.Text
+  status               String   @default("pending") // pending | confirmed | completed | cancelled
+  assignedVehicleId    Int?
+  assignedDriver       String?
+  internalNotes        String?  @db.Text
+  paymentStatus        String?  // reserved for future use (unpaid | deposit | paid)
+  stripePaymentIntentId String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Vehicle {
+  id               Int       @id @default(autoincrement())
+  name             String
+  category         String
+  description      String    @db.Text
+  passengerCapacity Int
+  features         String    @db.Text // comma-separated tags
+  imageUrl         String?
+  displayOrder     Int       @default(0)
+  isActive         Boolean   @default(true)
+  bookings         Booking[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Service {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String   @db.Text
+  icon         String?
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Testimonial {
+  id           Int      @id @default(autoincrement())
+  clientName   String
+  clientTitle  String?
+  quote        String   @db.Text
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model BlogPost {
+  id              Int       @id @default(autoincrement())
+  title           String
+  slug            String    @unique
+  category        String?
+  coverImageUrl   String?
+  excerpt         String?   @db.Text
+  body            String    @db.LongText
+  metaTitle       String?
+  metaDescription String?   @db.Text
+  status          String    @default("draft") // draft | published
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model SiteSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String @db.Text
+}
