@@ -3,10 +3,20 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Services | Monarque Limo",
-  description: "Browse the premium chauffeur services offered by Monarque Limo."
-};
+async function getPageSettings() {
+  const rows = await prisma.siteSetting.findMany();
+  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+}
+
+export async function generateMetadata() {
+  const settings = await getPageSettings();
+
+  return {
+    title: settings.page_services_meta_title || "Services | Monarque Limo",
+    description:
+      settings.page_services_meta_description || "Browse the premium chauffeur services offered by Monarque Limo."
+  };
+}
 
 export default async function ServicesPage() {
   const services = await prisma.service.findMany({

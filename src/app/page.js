@@ -4,16 +4,31 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
+async function getPageSettings() {
+  const rows = await prisma.siteSetting.findMany();
+  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+}
+
 async function getHomeData() {
-  const [vehicles, services, testimonials, settingsRows] = await Promise.all([
+  const [vehicles, services, testimonials, settings] = await Promise.all([
     prisma.vehicle.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } }),
     prisma.service.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } }),
     prisma.testimonial.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } }),
-    prisma.siteSetting.findMany()
+    getPageSettings()
   ]);
 
-  const settings = Object.fromEntries(settingsRows.map((s) => [s.key, s.value]));
   return { vehicles, services, testimonials, settings };
+}
+
+export async function generateMetadata() {
+  const settings = await getPageSettings();
+
+  return {
+    title: settings.page_home_meta_title || "Monarque Limo | Luxury Chauffeur & Black Car Service",
+    description:
+      settings.page_home_meta_description ||
+      "Luxury chauffeur and black car service for airport transfers, corporate travel, weddings, and VIP events across California, Texas, and beyond."
+  };
 }
 
 export default async function HomePage() {

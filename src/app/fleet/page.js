@@ -3,10 +3,19 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Fleet | Monarque Limo",
-  description: "Explore the premium fleet available through Monarque Limo."
-};
+async function getPageSettings() {
+  const rows = await prisma.siteSetting.findMany();
+  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+}
+
+export async function generateMetadata() {
+  const settings = await getPageSettings();
+
+  return {
+    title: settings.page_fleet_meta_title || "Fleet | Monarque Limo",
+    description: settings.page_fleet_meta_description || "Explore the premium fleet available through Monarque Limo."
+  };
+}
 
 export default async function FleetPage() {
   const vehicles = await prisma.vehicle.findMany({
