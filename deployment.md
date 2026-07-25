@@ -2,7 +2,7 @@
 
 This project is a Next.js application with Prisma and MySQL. Vercel hosts the application; the MySQL database must be hosted separately because a local XAMPP database cannot be reached from Vercel.
 
-> Important: Vercel functions have an ephemeral filesystem. The current fleet image upload route writes files into `public/images/fleet/uploads`, which is suitable for local development but will not persist on Vercel. Before enabling production uploads, store uploaded images in object storage (for example Vercel Blob, Cloudinary, or Amazon S3) and save the returned public URL in `Vehicle.imageUrl`.
+> Important: Vercel functions have an ephemeral filesystem. This project stores admin-uploaded fleet images in Vercel Blob and saves the returned public URL in `Vehicle.imageUrl`. Static design assets remain in `public/images`.
 
 ## 1. Prepare a production MySQL database
 
@@ -62,6 +62,10 @@ openssl rand -base64 48
 
 Only configure SMTP variables when booking emails should be sent. The site can run without them, but email notifications will be skipped.
 
+### Connect Vercel Blob for fleet image uploads
+
+In the Vercel project, open **Storage**, create a **Blob** store, and connect it to the project. Vercel adds `BLOB_READ_WRITE_TOKEN` automatically. Confirm that variable is available to the Production environment, then redeploy. Do not create or expose this token as a `NEXT_PUBLIC_*` variable.
+
 ## 5. Apply Prisma migrations and seed the database
 
 Run migrations once against the production database from a trusted machine or your CI workflow. Load the production `DATABASE_URL` into that environment, then run:
@@ -97,7 +101,7 @@ After a successful deployment:
 - Log in to `/admin/login` using the seeded admin account.
 - Submit a test booking and confirm the record appears in the admin dashboard.
 - Verify SMTP delivery if email notifications are enabled.
-- Verify fleet images: static placeholder images work immediately; production admin uploads require external object storage as described above.
+- Verify fleet images: static placeholder images work immediately, and a new admin upload should return a public Vercel Blob URL.
 
 ## Ongoing releases
 
