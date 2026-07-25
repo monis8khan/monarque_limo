@@ -141,7 +141,10 @@ async function main() {
     { key: "stat_journeys_completed", value: "4200" },
     { key: "stat_years_of_excellence", value: "8" },
     { key: "stat_global_markets", value: "3" },
-    { key: "stat_privacy_guaranteed", value: "100" }
+    { key: "stat_privacy_guaranteed", value: "100" },
+    { key: "site_name", value: "Monarque Limo" },
+    { key: "site_title", value: "Luxury tailored for the modern journey." },
+    { key: "site_tagline", value: "Premium Chauffeur • Elevated mobility" }
   ];
 
   for (const s of settings) {

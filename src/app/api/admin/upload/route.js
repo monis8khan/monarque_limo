@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -30,10 +30,11 @@ export async function POST(request) {
 
   const ext = file.name.split(".").pop();
   const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
+  const uploadDir = path.join(process.cwd(), "public", "images", "fleet", "uploads");
   const filePath = path.join(uploadDir, safeName);
 
+  await mkdir(uploadDir, { recursive: true });
   await writeFile(filePath, buffer);
 
-  return NextResponse.json({ url: `/uploads/${safeName}` }, { status: 201 });
+  return NextResponse.json({ url: `/images/fleet/uploads/${safeName}` }, { status: 201 });
 }

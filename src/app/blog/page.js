@@ -3,10 +3,19 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Blog | Monarque Limo",
-  description: "News, guides, and updates from Monarque Limo."
-};
+async function getPageSettings() {
+  const rows = await prisma.siteSetting.findMany();
+  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+}
+
+export async function generateMetadata() {
+  const settings = await getPageSettings();
+
+  return {
+    title: settings.page_blog_meta_title || "Blog | Monarque Limo",
+    description: settings.page_blog_meta_description || "News, guides, and updates from Monarque Limo."
+  };
+}
 
 export default async function BlogListPage() {
   const posts = await prisma.blogPost.findMany({
