@@ -15,6 +15,8 @@ const emptyForm = {
   isActive: true
 };
 
+const fallbackImage = "/images/fleet/placeholder-vehicle.svg";
+
 export default function AdminFleetPage() {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -148,7 +150,20 @@ export default function AdminFleetPage() {
               <label>Image</label>
               <input type="file" accept="image/*" onChange={handleUpload} />
               {uploading && <p className="text-white/40 text-xs mt-1">Uploading...</p>}
-              {form.imageUrl && <p className="text-white/40 text-xs mt-1">Current: {form.imageUrl}</p>}
+              {form.imageUrl && (
+                <div className="mt-3">
+                  <img
+                    src={form.imageUrl}
+                    alt="Vehicle preview"
+                    className="h-28 w-full rounded-xl border border-white/10 object-cover"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = fallbackImage;
+                    }}
+                  />
+                  <p className="mt-1 text-xs text-white/40">Current: {form.imageUrl}</p>
+                </div>
+              )}
             </div>
             <div>
               <label>Display Order</label>

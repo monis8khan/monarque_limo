@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import BookingForm from "@/components/BookingForm";
+import FleetImage from "@/components/FleetImage";
 import Link from "next/link";
 
 export const revalidate = 60;
@@ -41,15 +42,9 @@ export default async function HomePage() {
     { label: "Privacy Guaranteed", value: `${settings.stat_privacy_guaranteed || "0"}%` }
   ];
 
-  const heroImage =
-    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80";
+  const heroImage = "/images/site/hero-luxury.svg";
   const displayedServices = services.slice(0, 3);
   const displayedVehicles = vehicles.slice(0, 3);
-  const fleetImages = [
-    "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1519643381401-22c77e60520e?auto=format&fit=crop&w=900&q=80"
-  ];
 
   return (
     <main className="relative overflow-hidden">
@@ -166,10 +161,10 @@ export default async function HomePage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {displayedVehicles.map((v, index) => (
+            {displayedVehicles.map((v) => (
               <div key={v.id} className="card group overflow-hidden p-0">
-                <img
-                  src={fleetImages[index % fleetImages.length]}
+                <FleetImage
+                  src={v.imageUrl}
                   alt={v.name}
                   className="h-48 w-full object-cover transition duration-500 group-hover:scale-105"
                 />

@@ -14,7 +14,11 @@ export default function PublicNavigation({ links, settings }) {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/85 backdrop-blur-2xl shadow-[0_10px_40px_rgba(0,0,0,0.25)]">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-16">
         <Link href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
-          <span className="brand-mark">M</span>
+          <img
+            src="/images/logo/monarque-logo.svg"
+            alt="Monarque Limo logo"
+            className="h-11 w-auto rounded-xl border border-white/10 bg-white/5 object-contain p-1"
+          />
           <span className="flex flex-col">
             <span className="font-display text-lg leading-none text-white">{settings?.site_name || "Monarque Limo"}</span>
             <span className="mt-1 text-[10px] uppercase tracking-[0.35em] text-white/45">

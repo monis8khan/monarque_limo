@@ -1,0 +1,23 @@
+<svg width="1600" height="1100" viewBox="0 0 1600 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1100" fill="#0E1116"/>
+  <rect x="28" y="28" width="1544" height="1044" rx="36" stroke="#C9A76A" stroke-opacity="0.45" stroke-width="3"/>
+  <rect x="92" y="120" width="1416" height="760" rx="34" fill="url(#paint0_linear)" fill-opacity="0.98"/>
+  <circle cx="210" cy="176" r="72" fill="#C9A76A" fill-opacity="0.26"/>
+  <circle cx="1380" cy="190" r="98" fill="#C9A76A" fill-opacity="0.18"/>
+  <path d="M314 590C337 503 425 455 516 455H854C982 455 1094 497 1165 585L1248 686C1267 708 1260 739 1238 753C1215 766 1180 768 1158 756L1052 692H492L388 744C366 756 332 753 311 741C289 728 282 696 301 670L314 590Z" fill="#111827" stroke="#F8F5EF" stroke-opacity="0.58" stroke-width="10"/>
+  <rect x="412" y="495" width="380" height="96" rx="18" fill="#C9A76A" fill-opacity="0.9"/>
+  <rect x="570" y="356" width="270" height="126" rx="24" fill="#F8F5EF" fill-opacity="0.12" stroke="#C9A76A" stroke-opacity="0.55" stroke-width="8"/>
+  <rect x="832" y="510" width="228" height="80" rx="16" fill="#F8F5EF" fill-opacity="0.12"/>
+  <rect x="293" y="746" width="106" height="84" rx="24" fill="#111827" stroke="#F8F5EF" stroke-opacity="0.55" stroke-width="8"/>
+  <rect x="1027" y="746" width="106" height="84" rx="24" fill="#111827" stroke="#F8F5EF" stroke-opacity="0.55" stroke-width="8"/>
+  <circle cx="350" cy="824" r="84" fill="#111827" stroke="#F8F5EF" stroke-opacity="0.62" stroke-width="12"/>
+  <circle cx="1084" cy="824" r="84" fill="#111827" stroke="#F8F5EF" stroke-opacity="0.62" stroke-width="12"/>
+  <text x="800" y="962" text-anchor="middle" fill="#F8F5EF" font-size="62" font-family="Arial, Helvetica, sans-serif" letter-spacing="6">MONARQUE LIMO</text>
+  <text x="800" y="1018" text-anchor="middle" fill="#C9A76A" font-size="30" font-family="Arial, Helvetica, sans-serif" letter-spacing="4">ELEVATED MOBILITY</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="92" y1="120" x2="1508" y2="880" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#151822"/>
+      <stop offset="1" stop-color="#0A0D14"/>
+    </linearGradient>
+  </defs>
+</svg>

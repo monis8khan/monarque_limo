@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import FleetImage from "@/components/FleetImage";
 import Link from "next/link";
 
 export const revalidate = 60;
@@ -23,12 +24,6 @@ export default async function FleetPage() {
     orderBy: { displayOrder: "asc" }
   });
 
-  const fleetImages = [
-    "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1519643381401-22c77e60520e?auto=format&fit=crop&w=900&q=80"
-  ];
-
   return (
     <main className="min-h-screen px-6 py-20 md:px-16">
       <div className="mx-auto max-w-7xl">
@@ -40,10 +35,10 @@ export default async function FleetPage() {
         </p>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {vehicles.map((vehicle, index) => (
+          {vehicles.map((vehicle) => (
             <article key={vehicle.id} className="card overflow-hidden p-0">
-              <img
-                src={fleetImages[index % fleetImages.length]}
+              <FleetImage
+                src={vehicle.imageUrl}
                 alt={vehicle.name}
                 className="h-48 w-full object-cover"
               />
