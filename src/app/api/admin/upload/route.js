@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const MAX_SIZE_BYTES = 4 * 1024 * 1024; // Keep below Vercel's server upload request limit.
+const EXTENSIONS = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif"
+};
 
 export async function POST(request) {
   const admin = requireAdmin(request);
@@ -22,19 +27,22 @@ export async function POST(request) {
   }
 
   if (file.size > MAX_SIZE_BYTES) {
-    return NextResponse.json({ error: "File too large (max 5MB)." }, { status: 400 });
+    return NextResponse.json({ error: "File too large (max 4MB)." }, { status: 400 });
   }
 
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return NextResponse.json(
+      { error: "Image storage is not configured. Add a Vercel Blob store to this project." },
+      { status: 503 }
+    );
+  }
 
-  const ext = file.name.split(".").pop();
-  const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", "images", "fleet", "uploads");
-  const filePath = path.join(uploadDir, safeName);
+  const extension = EXTENSIONS[file.type];
+  const pathname = `fleet/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
+  const blob = await put(pathname, file, {
+    access: "public",
+    contentType: file.type
+  });
 
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(filePath, buffer);
-
-  return NextResponse.json({ url: `/images/fleet/uploads/${safeName}` }, { status: 201 });
+  return NextResponse.json({ url: blob.url }, { status: 201 });
 }

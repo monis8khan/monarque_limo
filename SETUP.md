@@ -115,9 +115,9 @@ npm run start
   setting them (changing `.env` later doesn't retroactively update an already
   -created admin user — either re-seed against a fresh DB or update the user
   directly in phpMyAdmin's `User` table).
-- **Uploaded images don't show** — they're saved to `/public/uploads`, make
-  sure that folder exists and is writable (it's included in this zip with a
-  `.gitkeep` placeholder).
+- **Uploaded images don't show** — create and connect a Vercel Blob store,
+  then add its `BLOB_READ_WRITE_TOKEN` to `.env`. Uploaded fleet images are
+  stored in Blob so they work in both local development and Vercel.
 
 ## About "frontend" and "backend" folders
 

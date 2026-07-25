@@ -23,6 +23,7 @@ export default function AdminFleetPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   async function load() {
     setLoading(true);
@@ -89,14 +90,22 @@ export default function AdminFleetPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadError("");
     try {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
       const data = await res.json();
-      if (data.url) setForm((f) => ({ ...f, imageUrl: data.url }));
+      if (!res.ok || !data.url) {
+        setUploadError(data.error || "The image could not be uploaded.");
+        return;
+      }
+      setForm((f) => ({ ...f, imageUrl: data.url }));
+    } catch {
+      setUploadError("The image could not be uploaded. Please try again.");
     } finally {
       setUploading(false);
+      e.target.value = "";
     }
   }
 
@@ -150,6 +159,7 @@ export default function AdminFleetPage() {
               <label>Image</label>
               <input type="file" accept="image/*" onChange={handleUpload} />
               {uploading && <p className="text-white/40 text-xs mt-1">Uploading...</p>}
+              {uploadError && <p className="mt-1 text-xs text-red-300">{uploadError}</p>}
               {form.imageUrl && (
                 <div className="mt-3">
                   <img
