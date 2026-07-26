@@ -10,6 +10,7 @@ const KNOWN_LABELS = {
   stat_privacy_guaranteed: "Privacy Guaranteed (%)",
   site_title: "Site Title",
   site_tagline: "Site Tagline",
+  site_logo_url: "Site Logo",
   home_banner_image_url: "Home Banner Image",
   schema_business_json: "Business Schema JSON-LD",
   schema_website_json: "Website Schema JSON-LD"
@@ -218,7 +219,7 @@ export default function AdminSettingsPage() {
   const generalSettings = settings.filter(
     (s) =>
       !PAGE_TABS.some((tab) => [tab.metaTitleKey, tab.metaDescriptionKey].includes(s.key)) &&
-      !["schema_business_json", "schema_website_json", "home_banner_image_url"].includes(s.key)
+      !["schema_business_json", "schema_website_json", "home_banner_image_url", "site_logo_url"].includes(s.key)
   );
 
   const activePageTab = PAGE_TABS.find((tab) => tab.id === activeTab) || PAGE_TABS[0];
@@ -275,6 +276,47 @@ export default function AdminSettingsPage() {
           <p className="text-white/50">Loading...</p>
         ) : activeTab === "general" ? (
           <>
+            <div className="card space-y-4 mb-10">
+              <div>
+                <h2 className="text-white font-semibold">Brand Assets</h2>
+                <p className="text-white/50 text-sm mt-1">
+                  Upload and preview the logo used in the public header.
+                </p>
+              </div>
+              <div>
+                <label>Site Logo</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    handleImageUpload("site_logo_url", file);
+                    e.target.value = "";
+                  }}
+                />
+                {uploading.site_logo_url && <p className="text-white/40 text-xs mt-1">Uploading...</p>}
+                {uploadErrors.site_logo_url && (
+                  <p className="mt-1 text-xs text-red-300">{uploadErrors.site_logo_url}</p>
+                )}
+                <div className="mt-3 space-y-2">
+                  {settings.find((s) => s.key === "site_logo_url")?.value ? (
+                    <img
+                      src={settings.find((s) => s.key === "site_logo_url")?.value}
+                      alt="Site logo preview"
+                      className="h-24 w-full rounded-xl border border-white/10 object-contain bg-black/20 p-3"
+                    />
+                  ) : (
+                    <div className="flex h-24 items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/5 text-sm text-white/40">
+                      No logo set yet.
+                    </div>
+                  )}
+                  <p className="text-xs text-white/40">
+                    Current: {settings.find((s) => s.key === "site_logo_url")?.value || "Not set"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-4 mb-10">
               {generalSettings.map((s) => (
                 <div key={s.key} className="card flex items-end gap-3">
