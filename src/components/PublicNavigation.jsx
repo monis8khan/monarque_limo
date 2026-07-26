@@ -40,7 +40,7 @@ export default function PublicNavigation({ links, settings }) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href="/#booking" className="btn-gold hidden px-4 py-2 text-xs sm:inline-flex">
+          <a href="/#booking" className="!hidden lg:!inline-flex btn-gold px-4 py-2 text-xs lg:inline-flex">
             Book Now
           </a>
           <button
@@ -71,8 +71,8 @@ export default function PublicNavigation({ links, settings }) {
                 {link.label}
               </Link>
             ))}
-            <a href="/#booking" onClick={() => setMobileOpen(false)} className="btn-gold mt-2 justify-center">
-              Reserve a ride
+            <a href="/#booking" onClick={() => setMobileOpen(false)} className="btn-gold mt-2 w-full justify-center py-3 text-sm">
+              Reserve
             </a>
           </div>
         </div>
