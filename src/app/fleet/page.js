@@ -1,12 +1,12 @@
 import prisma from "@/lib/prisma";
 import FleetImage from "@/components/FleetImage";
 import Link from "next/link";
+import { safeFindMany, safeGetSettings } from "@/lib/safe-prisma";
 
 export const revalidate = 60;
 
 async function getPageSettings() {
-  const rows = await prisma.siteSetting.findMany();
-  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+  return safeGetSettings(() => prisma.siteSetting.findMany());
 }
 
 export async function generateMetadata() {
@@ -19,10 +19,12 @@ export async function generateMetadata() {
 }
 
 export default async function FleetPage() {
-  const vehicles = await prisma.vehicle.findMany({
-    where: { isActive: true },
-    orderBy: { displayOrder: "asc" }
-  });
+  const vehicles = await safeFindMany(() =>
+    prisma.vehicle.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: "asc" }
+    })
+  );
 
   return (
     <main className="min-h-screen px-6 py-20 md:px-16">

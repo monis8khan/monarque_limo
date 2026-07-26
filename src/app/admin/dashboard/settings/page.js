@@ -10,6 +10,7 @@ const KNOWN_LABELS = {
   stat_privacy_guaranteed: "Privacy Guaranteed (%)",
   site_title: "Site Title",
   site_tagline: "Site Tagline",
+  home_banner_image_url: "Home Banner Image",
   schema_business_json: "Business Schema JSON-LD",
   schema_website_json: "Website Schema JSON-LD"
 };
@@ -59,6 +60,8 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState({});
   const [pageMeta, setPageMeta] = useState(EMPTY_PAGE_META);
   const [schemaSettings, setSchemaSettings] = useState(EMPTY_SCHEMA_SETTINGS);
+  const [uploading, setUploading] = useState({});
+  const [uploadErrors, setUploadErrors] = useState({});
   const [activeTab, setActiveTab] = useState("general");
   const [newKey, setNewKey] = useState("");
   const [newValue, setNewValue] = useState("");
@@ -169,6 +172,36 @@ export default function AdminSettingsPage() {
     }
   }
 
+  async function handleImageUpload(field, file) {
+    if (!file) return;
+    setUploading((prev) => ({ ...prev, [field]: true }));
+    setUploadErrors((prev) => ({ ...prev, [field]: "" }));
+
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        setUploadErrors((prev) => ({
+          ...prev,
+          [field]: data.error || "The image could not be uploaded."
+        }));
+        return;
+      }
+
+      await save(field === "homeBannerImageUrl" ? "home_banner_image_url" : field, data.url);
+    } catch {
+      setUploadErrors((prev) => ({
+        ...prev,
+        [field]: "The image could not be uploaded. Please try again."
+      }));
+    } finally {
+      setUploading((prev) => ({ ...prev, [field]: false }));
+    }
+  }
+
   async function addSetting(e) {
     e.preventDefault();
     if (!newKey) return;
@@ -185,7 +218,7 @@ export default function AdminSettingsPage() {
   const generalSettings = settings.filter(
     (s) =>
       !PAGE_TABS.some((tab) => [tab.metaTitleKey, tab.metaDescriptionKey].includes(s.key)) &&
-      !["schema_business_json", "schema_website_json"].includes(s.key)
+      !["schema_business_json", "schema_website_json", "home_banner_image_url"].includes(s.key)
   );
 
   const activePageTab = PAGE_TABS.find((tab) => tab.id === activeTab) || PAGE_TABS[0];
@@ -323,6 +356,43 @@ export default function AdminSettingsPage() {
                 These values will be used for the public {activePageTab.label.toLowerCase()} page metadata.
               </p>
             </div>
+
+            {activePageTab.id === "home" && (
+              <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div>
+                  <label>Home Banner Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      handleImageUpload("homeBannerImageUrl", file);
+                      e.target.value = "";
+                    }}
+                  />
+                  {uploading.homeBannerImageUrl && <p className="text-white/40 text-xs mt-1">Uploading...</p>}
+                  {uploadErrors.homeBannerImageUrl && (
+                    <p className="mt-1 text-xs text-red-300">{uploadErrors.homeBannerImageUrl}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  {settings.find((s) => s.key === "home_banner_image_url")?.value ? (
+                    <img
+                      src={settings.find((s) => s.key === "home_banner_image_url")?.value}
+                      alt="Home banner preview"
+                      className="h-48 w-full rounded-xl border border-white/10 object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/5 text-sm text-white/40">
+                      No banner image set yet.
+                    </div>
+                  )}
+                  <p className="text-xs text-white/40">
+                    Current: {settings.find((s) => s.key === "home_banner_image_url")?.value || "Not set"}
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div>
               <label>Meta title</label>
