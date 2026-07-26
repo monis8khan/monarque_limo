@@ -24,7 +24,11 @@ export default async function PublicLayout({ children }) {
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div className="footer-card">
             <div className="flex items-center gap-3">
-              <span className="brand-mark">M</span>
+              <img
+                src={settings?.site_logo_url || "/images/logo/monarque-logo.svg"}
+                alt="Monarque Limo logo"
+                className="h-12 w-12 rounded-xl border border-white/10 bg-white/5 object-contain p-1"
+              />
               <div>
                 <p className="font-display text-xl text-white">{settings?.site_name || "Monarque Limo"}</p>
                 <p className="text-[10px] uppercase tracking-[0.35em] text-white/45">{settings?.site_tagline || "Luxury transport"}</p>
