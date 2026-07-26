@@ -1,11 +1,12 @@
 import "./globals.css";
 import PublicLayout from "@/components/PublicLayout";
 import prisma from "@/lib/prisma";
+import { safeGetSettings } from "@/lib/safe-prisma";
 
 export const metadata = {
   title: "Monarque Limo | Luxury Chauffeur & Black Car Service",
   description:
-    "Luxury chauffeur and black car service for airport transfers, corporate travel, weddings, and VIP events across California, Texas, and beyond.",
+    "Luxury chauffeur and black car service for airport transfers, corporate travel, weddings, and VIP events across Texas and beyond.",
   metadataBase: new URL("http://localhost:3000")
 };
 
@@ -21,8 +22,7 @@ function readSchemaValue(rawValue, fallback) {
 }
 
 export default async function RootLayout({ children }) {
-  const settingsRows = await prisma.siteSetting.findMany();
-  const settings = Object.fromEntries(settingsRows.map((s) => [s.key, s.value]));
+  const settings = await safeGetSettings(() => prisma.siteSetting.findMany());
 
   const websiteSchema = readSchemaValue(settings.schema_website_json, {
     "@context": "https://schema.org",
@@ -39,8 +39,7 @@ export default async function RootLayout({ children }) {
     telephone: "+1-800-555-0199",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Los Angeles",
-      addressRegion: "CA",
+      addressRegion: "TX",
       addressCountry: "US"
     }
   });

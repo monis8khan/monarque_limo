@@ -1,6 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import PublicNavigation from "@/components/PublicNavigation";
+import { safeGetSettings } from "@/lib/safe-prisma";
 
 const links = [
   { href: "/", label: "Home" },
@@ -11,8 +12,7 @@ const links = [
 ];
 
 export default async function PublicLayout({ children }) {
-  const settingsRows = await prisma.siteSetting.findMany();
-  const settings = Object.fromEntries(settingsRows.map((s) => [s.key, s.value]));
+  const settings = await safeGetSettings(() => prisma.siteSetting.findMany());
 
   return (
     <div className="relative min-h-screen">
@@ -53,7 +53,7 @@ export default async function PublicLayout({ children }) {
             <div className="mt-4 space-y-2 text-sm text-white/70">
               <p>hello@monarquelimo.com</p>
               <p>+1 (800) 555-0142</p>
-              <p>Serving California, Texas, and beyond</p>
+              <p>Serving Texas and beyond</p>
             </div>
           </div>
         </div>

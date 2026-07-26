@@ -144,7 +144,14 @@ export default function AdminBlogPage() {
               <input type="file" accept="image/*" onChange={handleUpload} />
               {uploading && <p className="text-white/40 text-xs mt-1">Uploading...</p>}
               {form.coverImageUrl && (
-                <p className="text-white/40 text-xs mt-1">Current: {form.coverImageUrl}</p>
+                <div className="mt-3 space-y-2">
+                  <img
+                    src={form.coverImageUrl}
+                    alt="Blog cover preview"
+                    className="h-28 w-full rounded-xl border border-white/10 object-cover"
+                  />
+                  <p className="text-white/40 text-xs">Current: {form.coverImageUrl}</p>
+                </div>
               )}
             </div>
 

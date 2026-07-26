@@ -1,19 +1,22 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { safeFindMany, safeQuery } from "@/lib/safe-prisma";
 
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const posts = await prisma.blogPost.findMany({
-    where: { status: "published" },
-    select: { slug: true }
-  });
+  const posts = await safeFindMany(() =>
+    prisma.blogPost.findMany({
+      where: { status: "published" },
+      select: { slug: true }
+    })
+  );
   return posts.map((p) => ({ slug: p.slug }));
 }
 
 async function getPost(slug) {
-  return prisma.blogPost.findFirst({ where: { slug, status: "published" } });
+  return safeQuery(() => prisma.blogPost.findFirst({ where: { slug, status: "published" } }), null);
 }
 
 export async function generateMetadata({ params }) {

@@ -1,11 +1,11 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import { safeFindMany, safeGetSettings } from "@/lib/safe-prisma";
 
 export const revalidate = 60;
 
 async function getPageSettings() {
-  const rows = await prisma.siteSetting.findMany();
-  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+  return safeGetSettings(() => prisma.siteSetting.findMany());
 }
 
 export async function generateMetadata() {
@@ -18,10 +18,12 @@ export async function generateMetadata() {
 }
 
 export default async function BlogListPage() {
-  const posts = await prisma.blogPost.findMany({
-    where: { status: "published" },
-    orderBy: { publishedAt: "desc" }
-  });
+  const posts = await safeFindMany(() =>
+    prisma.blogPost.findMany({
+      where: { status: "published" },
+      orderBy: { publishedAt: "desc" }
+    })
+  );
 
   return (
     <main className="px-6 md:px-16 py-20 min-h-screen">

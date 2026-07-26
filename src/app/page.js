@@ -2,19 +2,19 @@ import prisma from "@/lib/prisma";
 import BookingForm from "@/components/BookingForm";
 import FleetImage from "@/components/FleetImage";
 import Link from "next/link";
+import { safeFindMany, safeGetSettings } from "@/lib/safe-prisma";
 
 export const revalidate = 60;
 
 async function getPageSettings() {
-  const rows = await prisma.siteSetting.findMany();
-  return Object.fromEntries(rows.map((s) => [s.key, s.value]));
+  return safeGetSettings(() => prisma.siteSetting.findMany());
 }
 
 async function getHomeData() {
   const [vehicles, services, testimonials, settings] = await Promise.all([
-    prisma.vehicle.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } }),
-    prisma.service.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } }),
-    prisma.testimonial.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } }),
+    safeFindMany(() => prisma.vehicle.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } })),
+    safeFindMany(() => prisma.service.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } })),
+    safeFindMany(() => prisma.testimonial.findMany({ where: { isActive: true }, orderBy: { displayOrder: "asc" } })),
     getPageSettings()
   ]);
 
@@ -28,7 +28,7 @@ export async function generateMetadata() {
     title: settings.page_home_meta_title || "Monarque Limo | Luxury Chauffeur & Black Car Service",
     description:
       settings.page_home_meta_description ||
-      "Luxury chauffeur and black car service for airport transfers, corporate travel, weddings, and VIP events across California, Texas, and beyond."
+      "Luxury chauffeur and black car service for airport transfers, corporate travel, weddings, and VIP events across Texas and beyond."
   };
 }
 
@@ -42,7 +42,7 @@ export default async function HomePage() {
     { label: "Privacy Guaranteed", value: `${settings.stat_privacy_guaranteed || "0"}%` }
   ];
 
-  const heroImage = "/images/site/hero-luxury.svg";
+  const heroImage = settings.home_banner_image_url || "/images/site/hero-luxury.svg";
   const displayedServices = services.slice(0, 3);
   const displayedVehicles = vehicles.slice(0, 3);
 
