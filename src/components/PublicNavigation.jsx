@@ -15,7 +15,7 @@ export default function PublicNavigation({ links, settings }) {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-16">
         <Link href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
           <img
-            src="/images/logo/monarque-logo.svg"
+            src={settings?.site_logo_url || "/images/logo/monarque-logo.svg"}
             alt="Monarque Limo logo"
             className="h-11 w-auto rounded-xl border border-white/10 bg-white/5 object-contain p-1"
           />
